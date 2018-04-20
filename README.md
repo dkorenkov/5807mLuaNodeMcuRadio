@@ -12,3 +12,7 @@ NodeMCU custom build by frightanic.com
  powered by Lua 5.1.4 on SDK 1.5.4.1(39cb9a32)
  
  Feel free updating the code to fit your version of NodeMcu. You are welcome to check in your changes. I have no further plans for this code.
+
+
+You may use it as a sample to start 5807m support. 
+RDS functionazlity is commented out because it require some debugging.
