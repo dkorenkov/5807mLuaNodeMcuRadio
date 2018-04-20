@@ -1,0 +1,359 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" itemscope=itemscope itemtype="http://schema.org/Review">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style TYPE="text/css">
+        body {
+            padding: 1em;
+            margin: 0;
+            font: 100% "HelveticaNeue-Light", Helvetica, Arial, sans-serif;
+            line-height: 1.5em;
+            background-color: #36F;
+            color: white;
+        }
+
+        .readiness {
+            float:left;
+            background: radial-gradient(circle at 0.5em 0.5em, #f0f0f0, #777);
+            border-radius: 50%;
+            height: 2em;
+            width: 2em;
+            border: 1px outset #eeeaea;
+            margin: 0.385em 0.1em;
+        }
+
+        .rdns_success {
+            background: radial-gradient(circle at 0.5em 0.5em, #75f665, #003f1e);
+        }
+
+        .rdns_warn {
+            background: radial-gradient(circle at 0.5em 0.5em, #fae48a, rgb(85, 84, 84));
+        }
+
+        .rdns_err {
+            background: radial-gradient(circle at 0.5em 0.5em, #ffb997, #bd1100);
+        }
+        .lamp {
+             float:right
+        }
+        #station {
+            font-size: 2em;
+            background-color: black;
+            padding: 0.2em 0.5em;
+            color: #28be87;
+            border: 1px solid orange
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js" integrity="sha384-feJI7QwhOS+hwpX2zkaeJQjeiwlhOP+SdQDqhgvvo1DsjtiSQByFdThsxO669S2D" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" />
+    <script defer=defer defer=defer defer=defer defer=defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+    <TITLE>
+        ESP8266 FM rafio
+    </TITLE>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+            <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+                <h1>FM radio</h1>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <button type="button" class="btn btn-success" id="turnOnButton">On</button>
+                        </div>
+                        <div class="col-sm" =">
+                            <button type="button" class="btn alert-warning" id="muteButton">Mute</button>
+                        </div>
+                        <div class="col-sm" =">
+                            <button type="button" class="btn btn-danger" id="offButton">Off</button>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm">                           
+                        </div>
+                        <div class="col-sm">
+                            <button type="button" class="btn  alert-primary" id="stereoButton">Stereo</button>
+                        </div>
+                        <div class="col-sm">
+                            <button type="button" class="btn btn-secondary" id="bassButton">BassBoost</button>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-sm">
+                            Tuned<fig class="readiness" id="tunedLamp"></fig>                            
+                        </div>
+                        <div class="col-sm">
+                            Stereo<fig class="readiness" id="stereoLamp"></fig>                          
+                        </div>
+                        <div class="col-sm">
+                            <span id="station">
+                             104.2
+                            </span>
+                          </div>
+                    </div>
+                    <br />
+                    <div class="progress" id="signalLevel">
+                        <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="8" aria-valuemin="8" aria-valuemax="30"></div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm">
+                            Volume:
+                            <select class="form-control" id="volumeSelect" name="volumeSelect">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3" selected=selected>3</option>\
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                            </select>
+                        </div>
+                    </div>                    
+                    <div class="row" style="padding: 1em 0 5em 0">
+                        <div class="col-sm">
+                            <div class="input-group mb-3">
+                                <input type="text" id="stationFreq" class="form-control" placeholder="station, such as 104.90" aria-label="Station" aria-describedby="basic-addon2" />
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" id="stationButton" type="button">Change</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <a href="file.html" class="btn btn-info"> File upload </a>
+                <a href="status.html" class="btn btn-info">Status </a>
+                <a href="files.html" class="btn btn-info"> Files </a>
+            </main>
+        </div>
+    </div>
+
+</body>
+</html>
+<script language="javascript" type="text/javascript">
+ <!--
+    function updateControls(status) {
+        if (status.freq) 
+            $("#station").text((parseFloat(status.freq / 1000.)).toFixed(2))
+        if (status.fmstation) {
+            if (status.fmstation > 0)
+                $("#tunedLamp").addClass("rdns_success").removeClass("rdns_err")
+            else
+                $("#tunedLamp").addClass("rdns_err").removeClass("rdns_success")
+        }
+        if (status.signal) {
+            var val = (status.signal-8)*3.2
+            var progress=$('#signalLevel div.progress-bar').css("width", val + "%")
+            if (status.signal > 12 && status.signal < 15)
+                    $('#signalLevel div.progress-bar').addClass("bg-warning").removeClass("bg-success").removeClass("bg-danger")
+            else if (status.signal >= 15)
+                    $('#signalLevel div.progress-bar').addClass("bg-success").removeClass("bg-warning").removeClass("bg-danger")
+            else
+                    $('#signalLevel div.progress-bar').addClass("bg-danger").removeClass("bg-warning").removeClass("bg-success")
+        }
+        if (status.stereo) {
+            if (status.stereo > 0)
+                $("#stereoLamp").addClass("rdns_success")
+            else
+                $("#stereoLamp").removeClass("rdns_success")
+        }
+    }
+
+    $(document).ready(function () {
+        console.log('Document ready')    
+        $.ajax({
+            contentType: 'application/json',
+            method: 'PUT',
+            cache: false,
+            async: false,
+            processData: false,
+            data: JSON.stringify({
+                functionName: "RDA5807_Read"
+            }),
+            success: function (data) {
+                console.log("received ", data) 
+                if (data.status)
+                    updateControls(data.status)                           
+            },
+            error: function (reason, p1, p2) {
+                console.log("error getting post result: ", reason, p1, p2)
+            }
+        })
+    })
+
+
+    $("#offButton").click((e) => {
+        $.ajax({
+            contentType: 'application/json',
+            method: 'PUT',
+            cache: false,
+            async: false,
+            processData: false,
+            data: JSON.stringify({
+                functionName: "RDA5807_PowerOff"
+            }),
+            success: function (data) {
+                console.log("received ", data)
+                if (data.status)
+                    updateControls(data.status)    
+            },
+            error: function (reason, p1, p2) {
+                console.log("error getting post result: ", reason, p1, p2)
+            }
+        })
+    })
+
+
+    $("#muteButton").click((e) => {
+        $.ajax({
+            contentType: 'application/json',
+            method: 'PUT',
+            cache: false,
+            async: false,
+            processData: false,
+            data: JSON.stringify({
+                functionName: "RDA5807_Mute"
+            }),
+            success: function (data) {
+                console.log("received ", data)
+                if (data.status)
+                    updateControls(data.status)    
+            },
+            error: function (reason, p1, p2) {
+                console.log("error getting post result: ", reason, p1, p2)
+            }
+        })
+    })
+
+
+    $("#stereoButton").click((e) => {
+        $.ajax({
+            contentType: 'application/json',
+            method: 'PUT',
+            cache: false,
+            async: false,
+            processData: false,
+            data: JSON.stringify({
+                functionName: "RDA5807_Mono"
+            }),
+            success: function (data) {
+                console.log("received ", data)
+                if (data.status)
+                    updateControls(data.status)    
+            },
+            error: function (reason, p1, p2) {
+                console.log("error getting post result: ", reason, p1, p2)
+            }
+        })
+    })
+
+
+    $("#bassButton").click((e) => {
+        $.ajax({
+            contentType: 'application/json',
+            method: 'PUT',
+            cache: false,
+            async: false,
+            processData: false,
+            data: JSON.stringify({
+                functionName: "RDA5807_BassBoost"
+            }),
+            success: function (data) {
+                console.log("received ", data)
+                if (data.status)
+                    updateControls(data.status)    
+            },
+            error: function (reason, p1, p2) {
+                console.log("error getting post result: ", reason, p1, p2)
+            }
+        })
+    })
+
+    $('#volumeSelect').on('change', '', function (e) {
+        var volume = $("select[name='volumeSelect']").children(':selected').val();
+        $.ajax({
+            contentType: 'application/json',
+            method: 'PUT',
+            cache: false,
+            async: false,
+            processData: false,
+            data: JSON.stringify({
+                functionName: "RDA5807_Volume",
+                params: volume
+            }),
+            success: function (data) {
+                console.log("received ", data)
+                if (data.status)
+                    updateControls(data.status)    
+            },
+            error: function (reason, p1, p2) {
+                console.log("error getting post result: ", reason, p1, p2)
+            }
+        })
+    })
+
+    $("#stationButton").click((e) => {
+        var frequency = Math.floor(parseFloat($("#stationFreq").val()) * 100.).toString()
+        $.ajax({
+            contentType: 'application/json',
+            method: 'PUT',
+            cache: false,
+            async: false,
+            processData: false,
+            data: JSON.stringify({
+                functionName: "RDA5807_Frequency",
+                params: frequency
+            }),
+            success: function (data) {
+                console.log("received ", data)
+                if (data.status)
+                    updateControls(data.status)    
+            },
+            error: function (reason, p1, p2) {
+                console.log("error getting post result: ", reason, p1, p2)
+            }
+        })
+    })
+
+
+    $("#turnOnButton").click((e) => {
+        $.ajax({
+            contentType: 'application/json',
+            method: 'PUT',
+            cache: false,
+            async: false,
+            processData: false,
+            data: JSON.stringify({
+                functionName: "RDA5807_Reset"
+            }),
+            success: function (data) {
+                console.log("received ", data)
+                if (data.status)
+                    updateControls(data.status)    
+
+            },
+            error: function (reason, p1, p2) {
+                console.log("error getting post result: ", reason, p1, p2)
+            }
+        })
+    })
+
+// -->
+</script>

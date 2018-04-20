@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" itemscope itemtype="http://schema.org/Review">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style TYPE="text/css">
+        body {
+            padding: 1em;
+            margin: 0;
+            font: 100% "HelveticaNeue-Light", Helvetica, Arial, sans-serif;
+            line-height: 1.5em;
+            background-color: #36F;
+            color: white;
+        }            
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" />    
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script defer=defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>	
+	<TITLE>
+        ESP8266 File Upload
+    </TITLE>
+</head>
+<body>
+    <a href="/" style=float:left><i class="fa fa-home"></i></a>
+    <a href="files.html" class="btn btn-info" style="float:right"> Files </a>
+    <a href="index.html" class="btn btn-info" style="float:right"> Main page </a>    
+    <a href="status.html" class="btn btn-info" style="float:right"> Status</a>
+    <h1>
+        Upload file to server.
+    </h1>
+    <form id="newFileForm" role="form">
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">File Name</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="fileNameBox" type="text" value="" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="newFileEditBox">File content:</label>
+                <textarea class="form-control" rows="10" id="newFileEditBox">
+        </textarea>
+                <p id="_dragndrop_p">You may also drag and drop a new file</p>
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+    </form>
+</body>
+</html>
+<script language="javascript" type="text/javascript">
+ <!--
+$(document).ready(function() {
+	console.log('Document ready')
+});
+
+
+
+function showBriefly(afterElement, message, title) {
+    $('<div id="dragDropAlert" class="alert alert-warning alert-dismissible">'
+        + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
+        + '<h4><i class="icon fa fa-warning"></i>Not accepted</h4>'
+        + "<p>" + message
+        + '</div>').insertAfter(afterElement).delay(5000).fadeOut(1000)
+}
+
+
+
+
+$("#newFileEditBox").on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+})
+    .on('drop', function (e) {
+        droppedFiles = e.originalEvent.dataTransfer.files;
+        if (droppedFiles.length <= 0)
+            return
+        var file = droppedFiles[0]
+
+        if (file.size > 1000000)
+            return showBriefly($("#_dragndrop_p"), "File " + file.name + " is too big")
+
+        // Only process image files.
+        if (!file.name.match(".*\.lua") && !file.name.match(".*\.txt") && !file.name.match(".*\.json") && !file.name.match(".*\.html"))
+            return showBriefly($("#_dragndrop_p"), "Unsupported file type of file " + file.name)
+
+		$("#fileNameBox").val(file.name)
+
+        var reader = new FileReader()
+        reader.onload = function (e) {
+            $("#newFileEditBox").val(e.target.result);
+        }
+        reader.readAsText(file);
+    });
+
+
+$( "#newFileForm" ).submit(function( event ) {
+    $.ajax({
+        url: "?"+$("#fileNameBox").val(),
+       	contentType: "text/plain",
+        method: 'POST',		
+        cache: false,
+        async: false,
+		//dataType: 'json',
+		processData: false,
+		data: $("#newFileEditBox").val(),
+		 success: function (data) {		 	
+            console.log("received ",data)
+            if (data.filename)	{
+            	$("#fileNameBox").val('')
+            	$("#newFileEditBox").val('')
+            	$('div.alert').remove()
+            	$("#newFileForm" ).before('<div class="alert alert-success alert-dismissible fade in">'
+    				+'<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
+    				+'<strong>Success!</strong> Saved file '+data.filename
+  					+'</div>')
+            }	
+        },
+        error: function (reason,p1,p2) {            
+            console.log("error getting post result: ",reason,p1,p)
+        }	
+	})
+    return false;
+})
+
+// -->
+</script>

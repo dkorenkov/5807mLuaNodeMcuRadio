@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" itemscope=itemscope itemtype="http://schema.org/Review">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style TYPE="text/css">
+        body {
+            padding: 1em;
+            margin: 0;
+            font: 100% "HelveticaNeue-Light", Helvetica, Arial, sans-serif;
+            line-height: 1.5em;
+            background-color: #36F;
+            color: white;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js" integrity="sha384-feJI7QwhOS+hwpX2zkaeJQjeiwlhOP+SdQDqhgvvo1DsjtiSQByFdThsxO669S2D" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" />
+    <script defer=defer defer=defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+    <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" crossorigin="anonymous"></script>
+   <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <TITLE>
+        ESP8266 Files
+    </TITLE>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+            <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+                <button class="btn btn-danger" style="float:right" id="restartButton">Restart</button>
+                <h1>Files</h1>
+                <div class="container">
+                    <div class="row">
+                        <table id="fileList" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>FileName</th>
+                                    <th>Size</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+
+        </div>
+    </div>
+    <a href="index.html" class="btn btn-info"> Main page </a>
+    <a href="file.html" class="btn btn-info"> File upload </a>
+    <a href="status.html" class="btn btn-info"> Status</a>
+</body>
+</html>
+<script language="javascript" type="text/javascript">
+ <!--
+$(document).ready(function() {
+	console.log('Document ready')	
+ 	$.ajax({
+       	contentType: 'application/json',
+        method: 'PUT',		
+        cache: false,
+        async: false,
+		processData: false,
+		data: JSON.stringify({
+			moduleName: "utils",
+			functionName: "getFiles"
+		}),
+		success: function (data) {		 	
+            console.log("received ",data)	
+            $.each(data.fileList, (fileName, fileSize) => {
+                var compileButton=""
+                if (fileName.endsWith(".lua"))
+                    compileButton = '<button type="button" class="btn btn-primary compileButton">Compile</button> '
+
+                var file
+                if (!(fileName.endsWith(".lc")))
+                    file = '<a href="' + fileName + '">' + fileName+'</a>'
+                else
+                    file = fileName
+
+                var doButton=""
+                if (fileName.endsWith(".lua") || fileName.endsWith(".lc"))
+                    doButton = '<button type="button" class="btn btn-warning doButton">Do</button> '
+
+                var newRow = $('<tr><td>' + file + '</td><td>' + fileSize + '</td><td>' + compileButton + doButton+'<button class="btn btn-danger deleteFileButton">Delete</button></td></tr>').appendTo("#fileList tbody")              
+                     
+            })
+
+            $("main").append('<div class="row">'
+                + '<div class="col-sm alert alert-primary"> Flashsize: ' + data.flashsize + '</div> '
+                + '<div class="col-sm alert alert-success"> Total fs: ' + data.total + '</div> '
+                + '<div class="col-sm alert alert-primary"> Used: ' + data.used + '</div> '
+                + '<div class="col-sm alert alert-warning"> Remaining: ' + data.remaining + '</div> '
+                + '<div class="col-sm alert alert-primary"> Memory: ' + data.memory + '</div> '
+                + '</div>')
+
+            $('#fileList1').DataTable({
+                "paging": false,          
+                "info": false
+            })
+
+            $("button.compileButton").click((e) => {
+                var fileName = $(e.currentTarget).closest("tr").find("td:eq(0)").text()
+                $.ajax({
+                    contentType: 'application/json',
+                    method: 'PUT',
+                    cache: false,
+                    async: false,
+                    processData: false,
+                    data: JSON.stringify({
+                        moduleName: "compileUtils",
+                        functionName: "compile",
+                        params: fileName
+                    }),
+                    success: function (data) {
+                    },
+                    error: function (reason, p1, p2) {
+                        console.warn("error executing compileButton")	
+                    }
+                })
+            })
+            $("button.doButton").click((e) => {
+                var fileName = $(e.currentTarget).closest("tr").find("td:eq(0)").text()
+                $.ajax({
+                    contentType: 'application/json',
+                    method: 'PUT',
+                    cache: false,
+                    async: false,
+                    processData: false,
+                    data: JSON.stringify({
+                        moduleName: "utils",
+                        functionName: "doFile",
+                        params: fileName
+                    }),
+                    success: function (data) {
+                        console.log("doButton returned  ", data)	
+                    },
+                    error: function (reason, p1, p2) {
+                        console.warn("error executing doButton")	
+                    }
+                })
+            })
+            $("button.deleteFileButton").click((e) => {
+                var fileName = $(e.currentTarget).closest("tr").find("td:eq(0)").text()
+                $.ajax({
+                    contentType: 'application/json',
+                    method: 'PUT',
+                    cache: false,
+                    async: false,
+                    processData: false,
+                    data: JSON.stringify({
+                        moduleName: "utils",
+                        functionName: "deleteFile",
+                        params: fileName
+                    }),
+                    success: function (data) {
+                        location.reload();
+                    },
+                    error: function (reason, p1, p2) {
+                        console.warn("error executing deleteFileButton")	
+                    }
+                })
+            })            
+        },
+        error: function (reason,p1,p2) {            
+            console.log("error getting put result: ",reason,p1,p2)
+        }	
+	})
+})
+
+
+$('#restartButton').click((e) => {
+    $.ajax({
+        contentType: 'application/json',
+        method: 'PUT',
+        cache: false,
+        async: false,
+        processData: false,
+        data: JSON.stringify({
+            moduleName: "utils",
+            functionName: "restart"
+        }),
+        success: function (data) {
+            location.reload();
+        },
+        error: function (reason, p1, p2) {
+            console.warn("error executing deleteFileButton")
+        }
+    })
+})
+
+// -->
+</script>

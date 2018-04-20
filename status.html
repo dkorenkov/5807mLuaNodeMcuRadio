@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" itemscope=itemscope itemtype="http://schema.org/Review">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style TYPE="text/css">
+        body {
+            padding: 1em;
+            margin: 0;
+            font: 100% "HelveticaNeue-Light", Helvetica, Arial, sans-serif;
+            line-height: 1.5em;
+            background-color: #36F;
+            color: white;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script defer=defer defer=defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+
+
+    
+    
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js" integrity="sha384-feJI7QwhOS+hwpX2zkaeJQjeiwlhOP+SdQDqhgvvo1DsjtiSQByFdThsxO669S2D" crossorigin="anonymous"></script>    
+    <script defer=defer defer=defer defer=defer defer=defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+    <TITLE>
+        ESP8266 Light Control
+    </TITLE>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-xl-nowrap">
+            <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main">
+                <h1>ESP8266 NodeMCU</h1>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm alert alert-primary" id="nodeId">
+                            Chip&nbsp;id: <span></span>
+                        </div>
+                        <div class="col-sm alert alert-success" id="hostName">
+                            Host&nbsp;name: <span></span>
+                        </div>
+                        <div class="col-sm alert alert-info" id="nodeMcuVersion">
+                            NodeMCU version: <span></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm alert alert-warning" id="Memory">
+                            Available&nbsp;memory: <span></span>
+                        </div>
+                        <div class="col-sm alert alert-primary" id="Signal">
+                            Station&nbsp;signal: <span></span> dba
+                        </div>
+                        <div class="col-sm alert alert-success" id="PowerMode">
+                            Power&nbsp;Mode: <span></span> (1=strongest)
+                        </div>
+                    </div>
+                </div>
+                <a href="file.html" class="btn btn-info"> File upload </a>
+                <a href="index.html" class="btn btn-info"> Main page </a>
+                <a href="files.html" class="btn btn-info"> Files </a>
+                <div style="padding:2em"> </div>
+                <div class="container">
+                    <div class="panel panel-default">
+                        <form>
+                            <div class="form-group" id="executionForm">
+                                <label for="command">Execute command:</label>
+                                <textarea class="form-control" rows="5" id="command"></textarea>
+                            </div>
+                            <button type="button" class="btn" id="executeCommand">Execute</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
+<script language="javascript" type="text/javascript">
+ <!--
+$(document).ready(function() {
+	console.log('Document ready')
+ 	$.ajax({
+       	contentType: 'application/json',
+        method: 'PUT',		
+        cache: false,
+        async: false,
+		processData: false,
+		data: JSON.stringify({
+			moduleName: "utils",
+			functionName: "getStatus"
+		}),
+		success: function (data) {		 	
+            console.log("received ",data)	 
+            $("#nodeId span").text(data.nodeId)	
+            $("#hostName span").text(data.hostName)	
+            $("#nodeMcuVersion span").text(data.nodeMcuVersion)	
+            $("#Memory span").text(data.memory)	
+            $("#Signal span").text(data.signal)	
+            $("#PowerMode span").text(data.wifiPowerMode)	
+        },
+        error: function (reason,p1,p2) {            
+            console.log("error getting post result: ",reason,p1,p2)
+        }	
+	})
+})
+
+  
+
+$("#executeCommand").click((e) => {
+    $.ajax({
+        contentType: 'application/json',
+        method: 'PUT',
+        cache: false,
+        async: false,
+        processData: false,
+        data: JSON.stringify({
+            moduleName: "runUtils",
+            functionName: "exec",
+            params: $("#command").val()
+        }),
+        success: function (data) {
+            console.log("received ", data)
+            $("#executionForm").before('<div class="alert alert-success alert-dismissible fade in">'
+                + '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
+                + '<strong>Result:</strong>' + data.output
+                + '</div>')
+        },
+        error: function (reason, p1, p2) {
+            console.log("error getting post result: ", reason, p1, p2)
+        }
+    })
+})
+
+// -->
+</script>
