@@ -1,7 +1,8 @@
 # 5807mLuaNodeMcuRadio
 5807m Lua NodeMcu FM Radio with REST API and web control
 
-Since NODEMCU developers are not much concerned about backward compatibility, it works only on a specific version of nodemcu. 
+Since NODEMCU developers are not much concerned about backward compatibility, it works only on certain versions of nodemcu. 
+Teste on this build:
 
 NodeMCU custom build by frightanic.com
 	branch: master
